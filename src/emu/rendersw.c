@@ -446,8 +446,9 @@ static void FUNC_PREFIX(draw_rect)(const render_primitive *prim, void *dstdata, 
 			PIXEL_TYPE *dest = (PIXEL_TYPE *)dstdata + y * pitch + startx;
 
 			/* loop over cols */
-			for (x = startx; x < endx; x++)
+			for (x = startx; x < endx; x++) {
 				*dest++ = pix;
+			}
 		}
 	}
 

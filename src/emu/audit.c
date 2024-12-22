@@ -22,8 +22,8 @@
     FUNCTION PROTOTYPES
 ***************************************************************************/
 
-static int audit_one_rom(core_options *options, const rom_entry *rom, const game_driver *gamedrv, UINT32 validation, audit_record *record);
-static int audit_one_disk(core_options *options, const rom_entry *rom, const game_driver *gamedrv, UINT32 validation, audit_record *record);
+int audit_one_rom(core_options *options, const rom_entry *rom, const game_driver *gamedrv, UINT32 validation, audit_record *record);
+int audit_one_disk(core_options *options, const rom_entry *rom, const game_driver *gamedrv, UINT32 validation, audit_record *record);
 static int rom_used_by_parent(const game_driver *gamedrv, const rom_entry *romentry, const game_driver **parent);
 
 
@@ -309,7 +309,7 @@ int audit_summary(const game_driver *gamedrv, int count, const audit_record *rec
     audit_one_rom - validate a single ROM entry
 -------------------------------------------------*/
 
-static int audit_one_rom(core_options *options, const rom_entry *rom, const game_driver *gamedrv, UINT32 validation, audit_record *record)
+int audit_one_rom(core_options *options, const rom_entry *rom, const game_driver *gamedrv, UINT32 validation, audit_record *record)
 {
 	const game_driver *drv;
 	const rom_entry *chunk;
@@ -411,7 +411,7 @@ static int audit_one_rom(core_options *options, const rom_entry *rom, const game
     audit_one_disk - validate a single disk entry
 -------------------------------------------------*/
 
-static int audit_one_disk(core_options *options, const rom_entry *rom, const game_driver *gamedrv, UINT32 validation, audit_record *record)
+int audit_one_disk(core_options *options, const rom_entry *rom, const game_driver *gamedrv, UINT32 validation, audit_record *record)
 {
 	mame_file *source_file;
 	chd_file *source;

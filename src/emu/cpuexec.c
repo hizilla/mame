@@ -1202,6 +1202,19 @@ static TIMER_CALLBACK( cpu_firstvblankcallback )
  *
  *************************************/
 
+#include <time.h>
+#include <stdint.h>
+
+uint64_t test_clock_get_time(void)
+{
+	struct timespec ts = { 0 };
+	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
+	return (ts.tv_sec * 1000000 + ts.tv_nsec / 1000);
+}
+
+#define MAX_TEST_UPDATE 100
+uint64_t g_test_update[MAX_TEST_UPDATE][2];
+
 static TIMER_CALLBACK( cpu_vblankcallback )
 {
 	int cpunum;
@@ -1248,8 +1261,19 @@ static TIMER_CALLBACK( cpu_vblankcallback )
 	if (!--vblank_countdown)
 	{
 		/* do we update the screen now? */
-		if (!(machine->drv->video_attributes & VIDEO_UPDATE_AFTER_VBLANK))
+		if (!(machine->drv->video_attributes & VIDEO_UPDATE_AFTER_VBLANK)) {
+			static uint64_t last_end = 0;
+			uint64_t start = test_clock_get_time();
 			video_frame_update(FALSE);
+			uint64_t end = test_clock_get_time();
+
+			static int g_test_update_idx = 0;
+			g_test_update[g_test_update_idx % MAX_TEST_UPDATE][0] = end - start;
+			g_test_update[g_test_update_idx % MAX_TEST_UPDATE][1] = start - last_end;
+			g_test_update_idx++;
+
+			last_end = end;
+		}
 
 		/* Set the timer to update the screen */
 		timer_adjust(update_timer, attotime_make(0, machine->screen[0].vblank), 0, attotime_zero);

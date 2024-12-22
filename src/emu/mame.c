@@ -386,13 +386,13 @@ int mame_execute(core_options *options)
 			{
 				profiler_mark(PROFILER_EXTRA);
 
-				/* execute CPUs if not paused */
-				if (!mame->paused)
+				if (!mame->paused) {
+					/* execute CPUs if not paused */
 					cpuexec_timeslice();
-
-				/* otherwise, just pump video updates through */
-				else
+				} else {
+					/* otherwise, just pump video updates through */
 					video_frame_update(FALSE);
+				}
 
 				/* handle save/load */
 				if (mame->saveload_schedule_callback)

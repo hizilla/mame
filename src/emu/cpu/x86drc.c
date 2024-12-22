@@ -723,6 +723,7 @@ static void append_out_of_cycles(drc_core *drc)
 UINT32 drc_x86_get_features(void)
 {
 	UINT32 features = 0;
+#if 0
 #ifdef _MSC_VER
 	__asm
 	{
@@ -749,6 +750,7 @@ UINT32 drc_x86_get_features(void)
 	: "%ecx", "%edx"	/* clobbers ebx, ecx and edx */
 	);
 #endif /* MSC_VER */
+#endif
 	return features;
 }
 

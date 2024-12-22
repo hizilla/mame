@@ -722,7 +722,6 @@ void ui_draw_text_full(const char *origs, float x, float y, float wrapwidth, int
 			}
 			linestart += linecharcount;
 		}
-
 		/* append ellipses if needed */
 		if (wrap == WRAP_TRUNCATE && *s != 0 && draw != DRAW_NONE)
 		{
@@ -1225,6 +1224,9 @@ static UINT32 handler_messagebox_anykey(UINT32 state)
     of the standard keypresses
 -------------------------------------------------*/
 
+int g_test_show_frame = 0;
+int g_test_skip_frame = 0;
+
 static UINT32 handler_ingame(UINT32 state)
 {
 	int is_paused = mame_is_paused(Machine);
@@ -1344,7 +1346,7 @@ static UINT32 handler_ingame(UINT32 state)
 		ui_set_show_profiler(!ui_get_show_profiler());
 
 	/* toggle FPS display */
-	if (input_ui_pressed(IPT_UI_SHOW_FPS))
+	if (input_ui_pressed(IPT_UI_SHOW_FPS) || (g_test_show_frame == 1))
 		ui_set_show_fps(!ui_get_show_fps());
 
 	/* toggle crosshair display */
@@ -1352,7 +1354,7 @@ static UINT32 handler_ingame(UINT32 state)
 		video_crosshair_toggle();
 
 	/* increment frameskip? */
-	if (input_ui_pressed(IPT_UI_FRAMESKIP_INC))
+	if (input_ui_pressed(IPT_UI_FRAMESKIP_INC) || (g_test_skip_frame == 1))
 	{
 		/* get the current value and increment it */
 		int newframeskip = video_get_frameskip() + 1;
@@ -1382,7 +1384,7 @@ static UINT32 handler_ingame(UINT32 state)
 		video_set_throttle(!video_get_throttle());
 
 	/* check for fast forward */
-	if (input_port_type_pressed(IPT_UI_FAST_FORWARD, 0))
+	if (input_port_type_pressed(IPT_UI_FAST_FORWARD, 0) )
 	{
 		video_set_fastforward(TRUE);
 		ui_show_fps_temp(0.5);
@@ -1390,6 +1392,8 @@ static UINT32 handler_ingame(UINT32 state)
 	else
 		video_set_fastforward(FALSE);
 
+	g_test_show_frame = 0;
+    g_test_skip_frame = 0;
 	return 0;
 }
 

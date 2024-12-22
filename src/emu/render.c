@@ -1673,6 +1673,19 @@ static void add_container_primitives(render_target *target, render_primitive_lis
 	render_primitive *prim;
 	container_item *item;
 
+#if 0
+	for (item = container->itemlist; item != NULL; item = item->next)
+	{
+		printf("(%f, %f), (%f, %f), %f %f %f\n", item->bounds.x0, item->bounds.y0,
+			item->bounds.x1, item->bounds.y1,
+			item->color.r, item->color.g, item->color.b);
+	}
+
+	printf("===== add container start\n");
+
+#endif
+
+
 	/* first update the palette for the container, if it is dirty */
 	render_container_update_palette(container);
 
@@ -1699,12 +1712,24 @@ static void add_container_primitives(render_target *target, render_primitive_lis
 		container_xform.color = xform->color;
 	}
 
+#if 0
+	printf("container scale: %f, %f\n", container->xscale, container->yscale);
+	printf("container form scale: %f, %f\n", container_xform.xscale, container_xform.yscale);
+
+#endif
+
 	/* iterate over elements */
 	for (item = container->itemlist; item != NULL; item = item->next)
 	{
 		render_bounds bounds;
 		int width, height;
 		int clipped = TRUE;
+
+#if 0
+		printf("(%f, %f), (%f, %f), %f %f %f\n", item->bounds.x0, item->bounds.y0,
+			item->bounds.x1, item->bounds.y1,
+			item->color.r, item->color.g, item->color.b);
+#endif
 
 		/* compute the oriented bounds */
 		bounds = item->bounds;
@@ -1814,6 +1839,13 @@ static void add_container_primitives(render_target *target, render_primitive_lis
 				}
 				break;
 		}
+
+#if 0
+		printf("(%f, %f), (%f, %f), %f %f %f\n", prim->bounds.x0, prim->bounds.y0,
+			prim->bounds.x1, prim->bounds.y1,
+			prim->color.r, prim->color.g, prim->color.b);
+		printf("%p\n", prim->texture.base);
+#endif
 
 		/* add to the list or free if we're clipped out */
 		if (!clipped)

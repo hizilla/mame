@@ -1354,6 +1354,7 @@ int mame_validitychecks(const game_driver *curdriver)
 #ifdef PTR64
 	if (sizeof(void *) != 8)	{ mame_printf_error("PTR64 flag enabled, but was compiled for 32-bit target\n"); error = TRUE; }
 #else
+    =======
 	if (sizeof(void *) != 4)	{ mame_printf_error("PTR64 flag not enabled, but was compiled for 64-bit target\n"); error = TRUE; }
 #endif
 	lsbtest = 0;

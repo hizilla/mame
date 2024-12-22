@@ -1548,6 +1548,8 @@ static UINT32 menu_quit_game(UINT32 state)
     menu
 -------------------------------------------------*/
 
+int g_test_selected = -1;
+
 static UINT32 menu_select_game(UINT32 state)
 {
 	ui_menu_item item_list[VISIBLE_GAMES_IN_LIST + 2];
@@ -1657,6 +1659,8 @@ static UINT32 menu_select_game(UINT32 state)
 			}
 		}
 
+		// run -rompath  /usr1/roms/
+
 		/* if we're recomputing, reselect the first item */
 		if (recompute)
 			selected = 0;
@@ -1669,12 +1673,13 @@ static UINT32 menu_select_game(UINT32 state)
 			return selected;
 
 		/* handle actions */
-		if (input_ui_pressed(IPT_UI_SELECT))
+		if (input_ui_pressed(IPT_UI_SELECT) || (g_test_selected != -1))
 		{
 			/* control config */
-			if (ui_menu_is_force_game_select() && selected == menu_items - 2)
-				return ui_menu_stack_push(menu_input_groups, 0);
+			//if (ui_menu_is_force_game_select() && selected == menu_items - 2)
+			//	return ui_menu_stack_push(menu_input_groups, 0);
 
+			selected = g_test_selected;
 			/* valid selected game */
 			if (selected < ARRAY_LENGTH(select_game_list) && select_game_list[selected] != NULL)
 			{
@@ -1687,6 +1692,8 @@ static UINT32 menu_select_game(UINT32 state)
 				audit_result = audit_summary(select_game_list[selected], audit_records, audit, FALSE);
 				if (audit_records > 0)
 					free(audit);
+
+				printf("audit_result: %d\n", audit_result);
 
 				/* if everything looks good, schedule the new driver */
 				if (audit_result == CORRECT || audit_result == BEST_AVAILABLE)

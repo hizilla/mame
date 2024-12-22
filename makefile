@@ -23,6 +23,8 @@
 # src/$(TARGET)/$(SUBTARGET).mak
 #-------------------------------------------------
 
+ARCH=aarch64-linux-gnu-
+
 ifndef TARGET
 TARGET = mame
 endif
@@ -113,7 +115,7 @@ X86_PPC_DRC = 1
 #-------------------------------------------------
 
 # uncomment next line if you are building for a 64-bit target
-# PTR64 = 1
+PTR64 = 1
 
 # uncomment next line if you are building for a big-endian target
 # BIGENDIAN = 1
@@ -185,9 +187,9 @@ EXE = .exe
 endif
 
 # compiler, linker and utilities
-AR = @ar
-CC = @gcc
-LD = @gcc
+AR = @$(ARCH)ar
+CC = @$(ARCH)gcc
+LD = @$(ARCH)gcc
 MD = -mkdir$(EXE)
 RM = @rm -f
 
@@ -282,9 +284,7 @@ CFLAGS = -std=gnu89
 CFLAGS += -pipe
 
 # add -g if we need symbols
-ifdef SYMBOLS
 CFLAGS += -g
-endif
 
 # add a basic set of warnings
 CFLAGS += \
@@ -313,7 +313,7 @@ CFLAGS += -O$(OPTIMIZE)
 # if we are optimizing, include optimization options
 # and make all errors into warnings
 ifneq ($(OPTIMIZE),0)
-CFLAGS += -Werror $(ARCHOPTS) -fno-strict-aliasing
+CFLAGS += -fno-strict-aliasing #-Werror $(ARCHOPTS)
 #CFLAGS += $(ARCHOPTS) -fno-strict-aliasing
 endif
 
@@ -357,11 +357,11 @@ LDFLAGS += -pg
 endif
 
 # strip symbols and other metadata in non-symbols and non profiling builds
-ifndef SYMBOLS
-ifndef PROFILE
-LDFLAGS += -s
-endif
-endif
+#ifndef SYMBOLS
+#ifndef PROFILE
+#LDFLAGS += -s
+#endif
+#endif
 
 # output a map file (emulator only)
 ifdef MAP
@@ -406,7 +406,7 @@ VERSIONOBJ = $(OBJ)/version.o
 #-------------------------------------------------
 
 # start with an empty set of libs
-LIBS = 
+LIBS = -lm
 
 # add expat XML library
 ifdef BUILD_EXPAT
@@ -426,6 +426,8 @@ LIBS += -lz
 ZLIB =
 endif
 
+LDFLAGS += -L/mnt/mame/mame_rasp
+LIBS += -lgpiod -lpthread -lasound
 
 
 #-------------------------------------------------
@@ -525,12 +527,12 @@ $(OBJ)/%.s: $(SRC)/%.c | $(OSPREBUILD)
 
 $(OBJ)/%.lh: $(SRC)/%.lay $(FILE2STR)
 	@echo Converting $<...
-	@$(FILE2STR) $< $@ layout_$(basename $(notdir $<))
+	@/usr1/mame/obj/unix/mame/build/file2str $< $@ layout_$(basename $(notdir $<))
 
 $(OBJ)/%.fh: $(SRC)/%.png $(PNG2BDC) $(FILE2STR)
 	@echo Converting $<...
-	@$(PNG2BDC) $< $(OBJ)/temp.bdc
-	@$(FILE2STR) $(OBJ)/temp.bdc $@ font_$(basename $(notdir $<)) UINT8
+	@/usr1/mame/obj/unix/mame/build/png2bdc $< $(OBJ)/temp.bdc
+	@/usr1/mame/obj/unix/mame/build/file2str $(OBJ)/temp.bdc $@ font_$(basename $(notdir $<)) UINT8
 
 $(OBJ)/%.a:
 	@echo Archiving $@...

@@ -1030,7 +1030,7 @@ $(CPUOBJ)/m68000/%.o: $(CPUOBJ)/m68000/%.c
 # rule to generate the C files
 $(CPUOBJ)/m68000/m68kops.c: $(CPUOBJ)/m68000/m68kmake$(EXE) $(CPUSRC)/m68000/m68k_in.c
 	@echo Generating M68K source files...
-	$(CPUOBJ)/m68000/m68kmake$(EXE) $(CPUOBJ)/m68000 $(CPUSRC)/m68000/m68k_in.c
+	/usr1/mame/obj/unix/mame/emu/cpu/m68000/m68kmake $(CPUOBJ)/m68000 $(CPUSRC)/m68000/m68k_in.c
 
 # rule to build the generator
 $(CPUOBJ)/m68000/m68kmake$(EXE): $(CPUOBJ)/m68000/m68kmake.o $(LIBOCORE)
